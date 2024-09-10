@@ -6,7 +6,7 @@ Welcome to **Retro Tic-Tac-Toe**, a modern twist on the classic game, featuring 
 
 ## 🚀 Features
 
-### **Phase 1 - Core Features**
+### **Phase 1 - Core Features (In Progress)**
 - **Classic 2-Player Gameplay**: The timeless 3x3 grid Tic-Tac-Toe experience with real-time play between two users.
 - **Player Name Assignment**: Personalize your experience by assigning names to each player.
 - **Pixelated Retro UI**: Nostalgic design with a modern twist, optimized for both desktop and mobile.
