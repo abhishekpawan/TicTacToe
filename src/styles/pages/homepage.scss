@@ -1,0 +1,26 @@
+.homepage {
+  padding: 100px 8px;
+  justify-content: space-between;
+
+  &__header {
+    font-size: 5rem;
+    font-weight: 600;
+  }
+
+  &__start-btn {
+    width: 15rem;
+  }
+
+  &__popup {
+    div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .homepage__popup__btn {
+        margin: 2rem;
+        width: fit-content;
+        padding: 0 .4rem;
+      }
+    }
+  }
+}
