@@ -1,14 +1,13 @@
 import { Button, Popup } from "pixel-retroui";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useTheme } from "../theme/ThemeContext";
-import { themes } from "../theme/themes";
+import { themes } from "../theme/themes"
 import "../styles/pages/homepage.scss";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const { theme } = useTheme();
   const currentTheme = themes[theme];
-  const navigate = useNavigate();
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const openPopup = () => setIsPopupOpen(true);
   const closePopup = () => setIsPopupOpen(false);
@@ -45,20 +44,18 @@ const HomePage = () => {
           textColor={currentTheme.textColor}
           borderColor={currentTheme.borderColor}
           shadow={currentTheme.shadowColor}
-          onClick={() => navigate("/signup")}
           className="homepage__popup__btn"
         >
-          Sign Up
+          <Link to="/signup">Sign Up</Link>
         </Button>
         <Button
           bg={currentTheme.bg}
           textColor={currentTheme.textColor}
           borderColor={currentTheme.borderColor}
           shadow={currentTheme.shadowColor}
-          onClick={() => navigate("/play/random-match")}
           className="homepage__popup__btn"
         >
-          Play Anonymously
+          <Link to="/play/random-match">Play Anonymously</Link>
         </Button>
       </Popup>
     </main>
