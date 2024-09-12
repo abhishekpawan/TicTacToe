@@ -1,24 +1,39 @@
-import { Button } from "pixel-retroui";
+import { FC } from "react";
 import { useTheme } from "../theme/ThemeContext";
 import { themes } from "../theme/themes";
-import useGamePage from "../customHooks/useGamePage";
-import "../styles/pages/gamepage.scss";
-import PlayerTurnPopup from "../components/PlayerTurnPopup";
-import GameResultPopup from "../components/GameResultPopup";
+import useGameBoard from "../customHooks/useGameBoard";
+import PlayerTurnPopup from "./PlayerTurnPopup";
+import GameResultPopup from "./GameResultPopup";
+import { Button, Card } from "pixel-retroui";
+import "../styles/components/gameboard.scss";
 
-const GamePage = () => {
+export interface GameBoardProps {
+  playerDetails: [
+    {
+      name: string;
+      choice: string;
+    },
+    playerTwo: {
+      name: string;
+      choice: string;
+    }
+  ];
+  timer: number;
+}
+const GameBoard: FC<GameBoardProps> = ({ playerDetails, timer }) => {
   const { theme } = useTheme();
   const currentTheme = themes[theme];
+  const playerOneDetails = playerDetails[0];
+  const playerTwoDetails = playerDetails[1];
 
   const {
     gameState,
     gridClickCounter,
-    playerOneDetails,
-    playerTwoDetails,
     gameResult,
+    timeLeft,
     resetGame,
     handleGameGridClick,
-  } = useGamePage();
+  } = useGameBoard({ playerDetails, timer });
 
   return (
     <main
@@ -30,7 +45,9 @@ const GamePage = () => {
           gridClickCounter % 2 !== 0 ? playerOneDetails : playerTwoDetails
         }
       />
-      {gameResult.gameEnded && <GameResultPopup gameResult={gameResult} resetGame={resetGame} />}
+      {gameResult.gameEnded && (
+        <GameResultPopup gameResult={gameResult} resetGame={resetGame} />
+      )}
       <h1
         className="text-4xl font-bold"
         style={{ color: currentTheme.textColor }}
@@ -39,7 +56,7 @@ const GamePage = () => {
       </h1>
       <div className="gamepage__playerdetails flex justify-between w-full m-5 mt-20">
         <div className="gamepage__playerdetails__one flex flex-col items-start">
-          <p>*Avatar*</p>
+          <p style={{ color: currentTheme.textColor }}>*Avatar*</p>
           <div
             className={`gamepage__playerdetails__name ${
               gridClickCounter % 2 !== 0 ? "turn-active" : ""
@@ -56,9 +73,14 @@ const GamePage = () => {
             </span>
           </div>
         </div>
+        <div className="gamepage__timer">
+          <p className="text-3xl w-5" style={{ color: currentTheme.textColor }}>
+            {timeLeft}
+          </p>
+        </div>
 
         <div className="gamepage__playerdetails__two flex flex-col items-end">
-          <p>*Avatar*</p>
+          <p style={{ color: currentTheme.textColor }}>*Avatar*</p>
           <div
             className={`gamepage__playerdetails__name ${
               gridClickCounter % 2 === 0 ? "turn-active" : ""
@@ -76,17 +98,28 @@ const GamePage = () => {
           </div>
         </div>
       </div>
-      <div className="gamepage__grid">
+      <Card
+        bg={currentTheme.bg}
+        textColor={currentTheme.textColor}
+        borderColor={currentTheme.borderColor}
+        shadowColor={currentTheme.shadowColor}
+        className="gamepage__grid"
+      >
         {gameState.map((row, i) => (
-          <div key={i} className="gamepage__grid__one w-full">
+          <div key={i} className={`gamepage__grid__${i} w-full flex`}>
             {row.map((box, j) => (
-              <span key={j} onClick={() => handleGameGridClick(i, j)}>{`${
-                box === "-" ? "" : box
-              }`}</span>
+              <span
+                key={j}
+                style={{
+                  borderBottom: `5px solid ${currentTheme.borderColor}`,
+                  borderRight: `5px solid ${currentTheme.borderColor}`,
+                }}
+                onClick={() => handleGameGridClick(i, j)}
+              >{`${box === "-" ? "" : box}`}</span>
             ))}
           </div>
         ))}
-      </div>
+      </Card>
       <Button
         bg={currentTheme.bg}
         textColor={currentTheme.textColor}
@@ -101,4 +134,4 @@ const GamePage = () => {
   );
 };
 
-export default GamePage;
+export default GameBoard;

@@ -20,7 +20,7 @@ const PlayerTurnPopup: FC<PlayerTurnPopupPorps> = ({ playerDetails }) => {
       closePopup();
     }, 1000);
   }, []);
-  
+
   return (
     <>
       <Popup
@@ -34,15 +34,21 @@ const PlayerTurnPopup: FC<PlayerTurnPopupPorps> = ({ playerDetails }) => {
       >
         <div className="flex flex-col m-4">
           <h1
-            className="text-3xl mb-4"
+            className="text-3xl mb-4 font-bold"
             style={{ color: currentTheme.textColor }}
           >
             Game Starts
           </h1>
-          <p className="mb-4" style={{ color: currentTheme.textColor }}>
+          <p
+            className="mb-4 font-bold"
+            style={{ color: currentTheme.textColor }}
+          >
             {playerDetails.name}'s Turn
           </p>
-          <p className="text-8xl" style={{ color: currentTheme.textColor }}>
+          <p
+            className="text-8xl font-bold"
+            style={{ color: currentTheme.textColor }}
+          >
             {playerDetails.choice}
           </p>
         </div>

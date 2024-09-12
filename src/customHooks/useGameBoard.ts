@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { GameBoardProps } from "../components/GameBoard";
 
-const useGamePage = () => {
+const useGamBaord = ({ playerDetails, timer }: GameBoardProps) => {
+  const playerOneDetails = playerDetails[0];
+  const playerTwoDetails = playerDetails[1];
   const [gameResult, setGameResult] = useState({
     playerDetails: {
       name: "",
@@ -14,19 +17,27 @@ const useGamePage = () => {
     ["-", "-", "-"],
     ["-", "-", "-"],
   ]);
-  const [playerOneDetails, setPlayerOneDetails] = useState({
-    name: "Player 1",
-    choice: "O",
-  });
-  const [playerTwoDetails, setPlayerTwoDetails] = useState({
-    name: "Player 2",
-    choice: "X",
-  });
 
   // Randomize the starting player by initializing with a random value (1 or 2)
   const [gridClickCounter, setGridClickCounter] = useState(
     () => Math.floor(Math.random() * 2) + 1
   );
+  const [timerReset, setTimerReset] = useState<boolean>(false);
+  const [timeLeft, setTimeLeft] = useState(timer);
+
+  // handle player turn timer
+  const handleTurnTimer = () => {
+    if (timeLeft === 0) {
+      setGridClickCounter((prev) => prev + 1);
+      setTimerReset(true);
+      setTimeLeft(timer);
+      return;
+    }
+    const interval = setTimeout(() => {
+      setTimeLeft((prev) => prev - 1);
+    }, 1000);
+    return () => clearTimeout(interval);
+  };
 
   // Check for a win in any row
   const checkHorizontalWin = (board: string[][]) => {
@@ -136,6 +147,7 @@ const useGamePage = () => {
       );
       setGameState(newGameState);
       setGridClickCounter(gridClickCounter + 1);
+      setTimerReset(true);
     }
   };
 
@@ -156,6 +168,8 @@ const useGamePage = () => {
       isDraw: false,
       gameEnded: false,
     });
+    setTimeLeft(timer);
+    setTimerReset(true);
   };
 
   useEffect(() => {
@@ -163,15 +177,22 @@ const useGamePage = () => {
     checkDraw();
   }, [gridClickCounter]);
 
+  useEffect(() => {
+    if (timerReset) {
+      setTimeLeft(timer);
+      setTimerReset(false); // Reset the flag after resetting the timer
+    }
+    if (!gameResult.gameEnded) handleTurnTimer();
+  }, [timeLeft, gameResult.gameEnded]);
+
   return {
     gridClickCounter,
-    playerOneDetails,
-    playerTwoDetails,
     gameState,
     gameResult,
+    timeLeft,
     handleGameGridClick,
     resetGame,
   };
 };
 
-export default useGamePage;
+export default useGamBaord;

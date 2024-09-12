@@ -13,14 +13,20 @@ interface GameResultPopupProps {
     isDraw: boolean;
     gameEnded: boolean;
   };
-  resetGame: () => void
+  resetGame: () => void;
 }
 
-const GameResultPopup: FC<GameResultPopupProps> = ({ gameResult,resetGame }) => {
+const GameResultPopup: FC<GameResultPopupProps> = ({
+  gameResult,
+  resetGame,
+}) => {
   const { theme } = useTheme();
   const currentTheme = themes[theme];
   const [isPopupOpen, setIsPopupOpen] = useState(true);
-  const closePopup = () => setIsPopupOpen(false);
+  const closePopup = () => {
+    setIsPopupOpen(false);
+    resetGame();
+  };
 
   return (
     <>
@@ -36,7 +42,7 @@ const GameResultPopup: FC<GameResultPopupProps> = ({ gameResult,resetGame }) => 
         <div className="flex flex-col m-4">
           {gameResult.isDraw ? (
             <h1
-              className="text-3xl mb-4"
+              className="text-3xl mb-4 font-bold"
               style={{ color: currentTheme.textColor }}
             >
               "No Winners This Time!"
@@ -44,12 +50,15 @@ const GameResultPopup: FC<GameResultPopupProps> = ({ gameResult,resetGame }) => 
           ) : (
             <>
               <h1
-                className="text-5xl mb-4"
+                className="text-5xl mb-4 font-bold"
                 style={{ color: currentTheme.textColor }}
               >
                 Winner!!!
               </h1>
-              <p className="text-4xl" style={{ color: currentTheme.textColor }}>
+              <p
+                className="text-4xl font-bold"
+                style={{ color: currentTheme.textColor }}
+              >
                 {gameResult.playerDetails.name}
               </p>
             </>
@@ -71,7 +80,7 @@ const GameResultPopup: FC<GameResultPopupProps> = ({ gameResult,resetGame }) => 
             onClick={resetGame}
             className=""
           >
-            <Link to="/play">Play Again</Link>
+            Play Again
           </Button>
         </div>
       </Popup>
