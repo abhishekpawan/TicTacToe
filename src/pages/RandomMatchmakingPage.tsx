@@ -5,23 +5,17 @@ import { themes } from "../theme/themes";
 import { Button } from "pixel-retroui";
 import { Link } from "react-router-dom";
 import GameBoard from "../components/GameBoard";
+import useRandomMatchmaking from "../customHooks/useRandomMatchmaking";
 
 const RandomMatchmakingPage = () => {
   const { theme } = useTheme();
   const { isUserLoggedIn } = useAuth();
   const [isGameStarted, setGameStarted] = useState(false);
   const currentTheme = themes[theme];
-  const [playerOneDetails, setPlayerOneDetails] = useState({
-    name: "Player 1",
-    choice: "O",
-  });
-  const [playerTwoDetails, setPlayerTwoDetails] = useState({
-    name: "Player 2",
-    choice: "X",
-  });
+  const { playerOneDetails, playerTwoDetails } = useRandomMatchmaking();
   return (
     <>
-      {isGameStarted ? (
+      {isGameStarted && playerOneDetails && playerTwoDetails ? (
         <GameBoard
           playerDetails={[playerOneDetails, playerTwoDetails]}
           timer={5}

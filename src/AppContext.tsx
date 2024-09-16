@@ -1,17 +1,36 @@
 import { FC, ReactNode, createContext, useContext, useState } from "react";
+import { IPlayerDetail } from "./customHooks/useGameBoard";
 
 interface AppContextType {
-  demo: boolean;
-  setDemo: (state: boolean) => void;
+  playerOneDetails: IPlayerDetail | undefined;
+  setPlayerOneDetails: (state: IPlayerDetail) => void;
+  playerTwoDetails: IPlayerDetail | undefined;
+  setPlayerTwoDetails: (state: IPlayerDetail) => void;
+  ws: WebSocket | null;
+  setWs: (state: WebSocket | null) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [demo, setDemo] = useState<boolean>(false);
+  const [playerOneDetails, setPlayerOneDetails] = useState<IPlayerDetail>({
+    name: "Player 1",
+    choice: "O",
+  });
+  const [playerTwoDetails, setPlayerTwoDetails] = useState<IPlayerDetail>();
+  const [ws, setWs] = useState<WebSocket | null>(null);
 
   return (
-    <AppContext.Provider value={{ demo, setDemo }}>
+    <AppContext.Provider
+      value={{
+        playerOneDetails,
+        setPlayerOneDetails,
+        playerTwoDetails,
+        setPlayerTwoDetails,
+        ws,
+        setWs,
+      }}
+    >
       {children}
     </AppContext.Provider>
   );

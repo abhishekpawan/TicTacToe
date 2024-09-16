@@ -1,9 +1,10 @@
 import { Button, Popup } from "pixel-retroui";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "../theme/ThemeContext";
-import { themes } from "../theme/themes"
+import { themes } from "../theme/themes";
 import "../styles/pages/homepage.scss";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const HomePage = () => {
   const { theme } = useTheme();
@@ -11,6 +12,13 @@ const HomePage = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const openPopup = () => setIsPopupOpen(true);
   const closePopup = () => setIsPopupOpen(false);
+  
+  useEffect(() => {
+    const fetch = async () =>
+      axios.get("/api/").then((res) => console.log(res));
+
+    fetch();
+  }, []);
 
   return (
     <main className="homepage" style={{ background: currentTheme.pageBg }}>

@@ -1,23 +1,14 @@
 import { FC } from "react";
 import { useTheme } from "../theme/ThemeContext";
 import { themes } from "../theme/themes";
-import useGameBoard from "../customHooks/useGameBoard";
+import useGameBoard, { IPlayerDetail } from "../customHooks/useGameBoard";
 import PlayerTurnPopup from "./PlayerTurnPopup";
 import GameResultPopup from "./GameResultPopup";
 import { Button, Card } from "pixel-retroui";
 import "../styles/components/gameboard.scss";
 
 export interface GameBoardProps {
-  playerDetails: [
-    {
-      name: string;
-      choice: string;
-    },
-    playerTwo: {
-      name: string;
-      choice: string;
-    }
-  ];
+  playerDetails: IPlayerDetail[];
   timer: number;
 }
 const GameBoard: FC<GameBoardProps> = ({ playerDetails, timer }) => {
@@ -33,7 +24,10 @@ const GameBoard: FC<GameBoardProps> = ({ playerDetails, timer }) => {
     timeLeft,
     resetGame,
     handleGameGridClick,
+    ws,
   } = useGameBoard({ playerDetails, timer });
+
+  console.log(ws);
 
   return (
     <main
