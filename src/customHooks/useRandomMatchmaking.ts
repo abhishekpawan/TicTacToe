@@ -3,7 +3,7 @@ import { useApp } from "../AppContext";
 import { IPlayerDetail } from "./useGameBoard";
 
 const useRandomMatchmaking = () => {
-  const { playerOneDetails, playerTwoDetails, ws, setWs, setPlayerTwoDetails } =
+  const { playerOneDetails, playerTwoDetails, ws, setWs, setPlayerTwoDetails, setGameId } =
     useApp();
 
   // Establish the WebSocket connection to the server
@@ -26,9 +26,10 @@ const useRandomMatchmaking = () => {
       console.log("Received message from server:", data);
       switch (data.type) {
         case "start":
-          console.log("Game started with players:", data.players);
+          console.log("Game started with players:", data.opponent);
           // const roomId = message.roomId;
-          setPlayerTwoDetails(data.players as IPlayerDetail);
+          setPlayerTwoDetails(data.opponent as IPlayerDetail);
+          setGameId(data.gameId)
           break;
 
         default:

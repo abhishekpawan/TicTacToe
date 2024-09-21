@@ -5,19 +5,24 @@ import { themes } from "../theme/themes";
 import "../styles/pages/homepage.scss";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useApp } from "../AppContext";
 
 const HomePage = () => {
   const { theme } = useTheme();
+  const { setPlayerOneDetails } = useApp();
   const currentTheme = themes[theme];
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const openPopup = () => setIsPopupOpen(true);
   const closePopup = () => setIsPopupOpen(false);
-  
-  useEffect(() => {
-    const fetch = async () =>
-      axios.get("/api/").then((res) => console.log(res));
 
-    fetch();
+  useEffect(() => {
+    // const fetch = async () =>
+    //   axios.get("/api/").then((res) => console.log(res));
+
+    // fetch();
+    const name = window.prompt("enterName");
+    const choice = window.prompt("enterchoice");
+    if (name && choice) setPlayerOneDetails({ name, choice });
   }, []);
 
   return (

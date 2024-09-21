@@ -2,7 +2,7 @@ import { FC, useState } from "react";
 import { useTheme } from "../theme/ThemeContext";
 import { themes } from "../theme/themes";
 import { Button, Popup } from "pixel-retroui";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface GameResultPopupProps {
   gameResult: {
@@ -21,11 +21,12 @@ const GameResultPopup: FC<GameResultPopupProps> = ({
   resetGame,
 }) => {
   const { theme } = useTheme();
+  const navigate = useNavigate()
   const currentTheme = themes[theme];
   const [isPopupOpen, setIsPopupOpen] = useState(true);
   const closePopup = () => {
     setIsPopupOpen(false);
-    resetGame();
+    navigate("")
   };
 
   return (
@@ -77,7 +78,7 @@ const GameResultPopup: FC<GameResultPopupProps> = ({
             textColor={currentTheme.textColor}
             borderColor={currentTheme.borderColor}
             shadow={currentTheme.shadowColor}
-            onClick={resetGame}
+            onClick={() => navigate("/")}
             className=""
           >
             Play Again

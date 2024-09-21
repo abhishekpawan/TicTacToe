@@ -6,6 +6,8 @@ interface AppContextType {
   setPlayerOneDetails: (state: IPlayerDetail) => void;
   playerTwoDetails: IPlayerDetail | undefined;
   setPlayerTwoDetails: (state: IPlayerDetail) => void;
+  gameId: string;
+  setGameId: (state: string) => void;
   ws: WebSocket | null;
   setWs: (state: WebSocket | null) => void;
 }
@@ -18,6 +20,7 @@ export const AppProvider: FC<{ children: ReactNode }> = ({ children }) => {
     choice: "O",
   });
   const [playerTwoDetails, setPlayerTwoDetails] = useState<IPlayerDetail>();
+  const [gameId, setGameId] = useState("");
   const [ws, setWs] = useState<WebSocket | null>(null);
 
   return (
@@ -29,6 +32,7 @@ export const AppProvider: FC<{ children: ReactNode }> = ({ children }) => {
         setPlayerTwoDetails,
         ws,
         setWs,
+        gameId, setGameId,
       }}
     >
       {children}

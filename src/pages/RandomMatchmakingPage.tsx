@@ -1,18 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../auth/authContext";
 import { useTheme } from "../theme/ThemeContext";
 import { themes } from "../theme/themes";
 import { Button } from "pixel-retroui";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import GameBoard from "../components/GameBoard";
 import useRandomMatchmaking from "../customHooks/useRandomMatchmaking";
 
 const RandomMatchmakingPage = () => {
   const { theme } = useTheme();
+  // const navigate = useNavigate()
   const { isUserLoggedIn } = useAuth();
   const [isGameStarted, setGameStarted] = useState(false);
   const currentTheme = themes[theme];
   const { playerOneDetails, playerTwoDetails } = useRandomMatchmaking();
+  console.log('playerOneDetails', playerOneDetails)
+  console.log('playerTwoDetails', playerTwoDetails)
+  useEffect(() => {
+if(playerTwoDetails) {
+  setGameStarted(true)
+}
+  }, [playerTwoDetails])
   return (
     <>
       {isGameStarted && playerOneDetails && playerTwoDetails ? (
@@ -48,7 +56,7 @@ const RandomMatchmakingPage = () => {
               >
                 <Link to="/">Cancel</Link>
               </Button>
-              <Button
+              {/* <Button
                 bg={currentTheme.bg}
                 textColor={currentTheme.textColor}
                 borderColor={currentTheme.borderColor}
@@ -56,7 +64,7 @@ const RandomMatchmakingPage = () => {
                 onClick={() => setGameStarted(true)}
               >
                 Proceed
-              </Button>
+              </Button> */}
             </div>
           </div>
         </main>

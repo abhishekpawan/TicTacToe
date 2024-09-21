@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GameBoardProps } from "../components/GameBoard";
 import { useApp } from "../AppContext";
+import { useNavigate } from "react-router-dom";
 
 export interface IPlayerDetail {
   name: string;
@@ -8,7 +9,8 @@ export interface IPlayerDetail {
 }
 
 const useGameBoard = ({ playerDetails, timer }: GameBoardProps) => {
-  const { ws, setWs } = useApp();
+  const { ws, gameId } = useApp();
+  const navigate = useNavigate()
   const playerOneDetails = playerDetails[0];
   const playerTwoDetails = playerDetails[1];
   // const [waiting, setWaiting] = useState(true); // For handling 'waiting' state
@@ -102,16 +104,31 @@ const useGameBoard = ({ playerDetails, timer }: GameBoardProps) => {
     const winner = horizontalWin || verticalWin || diagonalWin;
 
     if (winner) {
+      
       setTimeout(() => {
+        const winnerPlayerDetails = winner === playerOneDetails.choice
+        ? playerOneDetails
+        : playerTwoDetails;
         resetGame();
         setGameResult({
           playerDetails:
-            winner === playerOneDetails.choice
-              ? playerOneDetails
-              : playerTwoDetails,
+          winnerPlayerDetails,
           isDraw: false,
           gameEnded: true,
         });
+        if (ws) {
+          const gameResult = {
+            type: 'result',
+            result: {
+              winnerPlayerDetails,
+              isDraw: false,
+              gameEnded: true,
+              gameId
+            }
+          };
+          
+          ws.send(JSON.stringify(gameResult));
+        }
       }, 500);
       return true;
     }
@@ -134,6 +151,22 @@ const useGameBoard = ({ playerDetails, timer }: GameBoardProps) => {
           isDraw: true,
           gameEnded: true,
         });
+        if (ws) {
+          const gameResult = {
+            type: 'result',
+            result: {
+              winnerPlayerDetails: {
+                name: "",
+                choice: "",
+              },
+              isDraw: false,
+              gameEnded: true,
+              gameId
+            }
+          };
+          
+          ws.send(JSON.stringify(gameResult));
+        }
       }, 500);
     }
   };
@@ -154,16 +187,21 @@ const useGameBoard = ({ playerDetails, timer }: GameBoardProps) => {
         )
       );
       setGameState(newGameState);
+      console.log(JSON.stringify(newGameState))
       setGridClickCounter(gridClickCounter + 1);
       setTimerReset(true);
       // Send the move to the server
-      if (ws)
-        ws.send(
-          JSON.stringify({
-            type: "move",
-            move: { row: i, col: j, player: playerOneDetails.name },
-          })
-        );
+      if (ws) {
+        const moveDetails = {
+          type: 'move',
+          move: {
+            gameId,
+          newGameState,
+          }
+        };
+        
+        ws.send(JSON.stringify(moveDetails));
+      }
     }
   };
 
@@ -201,42 +239,6 @@ const useGameBoard = ({ playerDetails, timer }: GameBoardProps) => {
     if (!gameResult.gameEnded) handleTurnTimer();
   }, [timeLeft, gameResult.gameEnded]);
 
-  // Establish the WebSocket connection to the server
-  useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8080");
-
-    // Save the connection in the state
-    setWs(socket);
-
-    // Handle WebSocket events
-    socket.onopen = () => {
-      console.log("Connected to WebSocket server");
-
-      // Send an initial message to the server (joining the game)
-      socket.send(JSON.stringify({ type: "join", player: playerOneDetails }));
-    };
-
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log("Received message from server:", data);
-
-      // Handle incoming messages, such as moves from the opponent
-    };
-
-    socket.onerror = (error) => {
-      console.log("WebSocket error:", error);
-    };
-
-    socket.onclose = () => {
-      console.log("WebSocket connection closed");
-    };
-
-    // Cleanup the connection when the component unmounts
-    return () => {
-      socket.close();
-    };
-  }, []);
-
   useEffect(() => {
     if (ws) {
       ws.onmessage = (event) => {
@@ -245,8 +247,9 @@ const useGameBoard = ({ playerDetails, timer }: GameBoardProps) => {
         console.log("Received message from server:", message);
 
         switch (message.type) {
-          case "move":
-            // handleOpponentMove(message.move.row, message.move.col);
+          case "update":
+            console.log("update", message.board);
+            setGameState(message.board)
             break;
 
           default:
