@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGame } from '../../contexts/GameContext';
+import Button from '../UI/Button';
 import '../../styles/GameStatus.css';
 
 const GameStatus: React.FC = () => {
@@ -50,13 +51,21 @@ const GameStatus: React.FC = () => {
       {(isGameOver || opponentDisconnected) && (
         <div className="game-actions">
           {!opponentDisconnected && (
-            <button className="play-again-btn" onClick={playAgain}>
+            <Button 
+              variant="primary" 
+              onClick={playAgain}
+              className="game-action-btn"
+            >
               Play Again
-            </button>
+            </Button>
           )}
-          <button className="find-match-btn" onClick={findMatch}>
+          <Button 
+            variant="secondary" 
+            onClick={findMatch}
+            className="game-action-btn"
+          >
             Find New Match
-          </button>
+          </Button>
         </div>
       )}
       

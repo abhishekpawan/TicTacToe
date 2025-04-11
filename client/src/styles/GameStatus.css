@@ -1,27 +1,77 @@
 .game-status {
-  position: relative;
-  background-color: var(--card-bg);
-  border-radius: var(--border-radius);
-  padding: 2rem;
-  margin: 2rem 0;
-  text-align: center;
-  box-shadow: var(--box-shadow);
-  animation: slideDown 0.4s ease-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  margin: 1rem auto;
   max-width: 400px;
   width: 100%;
+  border-radius: var(--border-radius);
+  background-color: var(--card-bg);
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+  animation: fadeIn 0.5s ease-out;
 }
 
 .status-message {
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   color: var(--text-color);
+  text-align: center;
+  font-weight: 600;
+}
+
+.status-message:empty {
+  display: none;
 }
 
 .game-actions {
   display: flex;
   gap: 1rem;
-  justify-content: center;
+  margin-top: 0.5rem;
   flex-wrap: wrap;
+  justify-content: center;
+}
+
+.game-action-btn {
+  min-width: 150px;
+}
+
+.loading-spinner {
+  margin: 1rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(var(--primary-color-rgb), 0.2);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spinner-rotate 1s linear infinite;
+}
+
+@keyframes spinner-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .play-again-btn, .find-match-btn {
@@ -49,39 +99,6 @@
 .play-again-btn:active, .find-match-btn:active {
   transform: translateY(0);
   box-shadow: none;
-}
-
-/* Loading Spinner */
-.loading-spinner {
-  margin: 1rem auto;
-  text-align: center;
-}
-
-.spinner {
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  border-top-color: var(--primary-color);
-  animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 @media (max-width: 500px) {

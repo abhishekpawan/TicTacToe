@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGame } from '../../contexts/GameContext';
 import { useAuth } from '../../contexts/AuthContext';
+import Button from '../UI/Button';
 import '../../styles/Welcome.css';
 
 const Welcome: React.FC = () => {
@@ -32,14 +33,23 @@ const Welcome: React.FC = () => {
               <span></span>
               <span></span>
             </div>
-            <button className="cancel-match-btn" onClick={cancelMatchmaking}>
+            <Button 
+              variant="outline" 
+              onClick={cancelMatchmaking}
+              className="cancel-match-btn"
+            >
               Cancel
-            </button>
+            </Button>
           </div>
         ) : (
-          <button className="start-game-btn" onClick={findMatch}>
+          <Button 
+            variant="primary" 
+            onClick={findMatch}
+            size="large"
+            className="start-game-btn"
+          >
             Find a Match
-          </button>
+          </Button>
         )}
         
         <div className="auth-info">
@@ -50,8 +60,14 @@ const Welcome: React.FC = () => {
               <p className="auth-info-text">
                 Create an account to track your game statistics!
               </p>
-              <Link to="/auth" className="auth-link-btn">
-                Login / Sign Up
+              <Link to="/auth" className="auth-link">
+                <Button 
+                  variant="secondary" 
+                  size="medium"
+                  className="auth-link-btn"
+                >
+                  Login / Sign Up
+                </Button>
               </Link>
             </>
           )}

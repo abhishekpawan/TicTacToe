@@ -12,13 +12,22 @@
 .game-title {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--primary-color);
   margin: 0;
-  background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+  background: linear-gradient(to right, var(--secondary-color), #fc8181);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: fadeIn 0.5s ease-in;
+  animation: fadeIn 0.5s ease-in, shimmer 2s infinite alternate;
+  position: relative;
+}
+
+@keyframes shimmer {
+  0% {
+    filter: brightness(100%);
+  }
+  100% {
+    filter: brightness(120%);
+  }
 }
 
 @keyframes fadeIn {

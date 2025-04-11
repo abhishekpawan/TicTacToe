@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Button from '../UI/Button';
 
 interface ErrorWithMessage {
   message: string;
@@ -77,7 +78,6 @@ const SignupForm = () => {
 
   return (
     <div className="auth-form-container">
-      <h2>Sign Up</h2>
       {error && <div className="error-message">{error}</div>}
       {message && <div className="success-message">{message}</div>}
       
@@ -93,13 +93,13 @@ const SignupForm = () => {
       )}
       
       {showCredentials && (
-        <button 
-          type="button" 
+        <Button 
+          variant="primary"
           onClick={() => document.querySelector('.toggle-button:first-child')?.dispatchEvent(new Event('click'))}
           className="switch-to-login-btn"
         >
           Go to Login
-        </button>
+        </Button>
       )}
       
       <form onSubmit={(e) => { void handleSubmit(e); }}>
@@ -125,15 +125,14 @@ const SignupForm = () => {
               disabled={loading}
               required
             />
-            <button 
-              type="button" 
+            <Button 
+              variant="text"
               className="password-toggle-btn" 
-              onClick={() => void togglePasswordVisibility()}
-              tabIndex={-1}
+              onClick={togglePasswordVisibility}
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </button>
+            </Button>
           </div>
         </div>
         <div className="form-group">
@@ -147,20 +146,26 @@ const SignupForm = () => {
               disabled={loading}
               required
             />
-            <button 
-              type="button" 
+            <Button 
+              variant="text"
               className="password-toggle-btn" 
-              onClick={() => void toggleConfirmPasswordVisibility()}
-              tabIndex={-1}
+              onClick={toggleConfirmPasswordVisibility}
               aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}
             >
               {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-            </button>
+            </Button>
           </div>
         </div>
-        <button type="submit" disabled={loading} className="auth-button">
+        <Button 
+          variant="primary" 
+          type="submit" 
+          disabled={loading} 
+          loading={loading}
+          fullWidth
+          className="auth-button"
+        >
           {loading ? 'Signing Up...' : 'Sign Up'}
-        </button>
+        </Button>
       </form>
     </div>
   );

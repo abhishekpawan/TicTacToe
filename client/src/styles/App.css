@@ -1,32 +1,36 @@
 :root {
   /* Light theme colors */
-  --bg-color-light: #f5f5f5;
+  --bg-color-light: #fcfcfc;
   --text-color-light: #333333;
   --primary-color-light: #2563eb; /* X - Vibrant blue */
   --secondary-color-light: #e11d48; /* O - Vibrant red */
   --accent-color-light: #2ecc71;
-  --border-color-light: #dddddd;
+  --border-color-light: #e0e0e0;
   --card-bg-light: #ffffff;
-  --hover-color-light: #f0f0f0;
+  --hover-color-light: #f5f5f5;
+  --primary-color-rgb-light: 37, 99, 235;
+  --secondary-color-rgb-light: 225, 29, 72;
 
   /* Dark theme colors */
-  --bg-color-dark: #1a1a2e;
+  --bg-color-dark: #121212;
   --text-color-dark: #e6e6e6;
   --primary-color-dark: #60a5fa; /* X - Brighter blue for dark mode */
   --secondary-color-dark: #fb7185; /* O - Brighter red for dark mode */
   --accent-color-dark: #4ecca3;
-  --border-color-dark: #444444;
-  --card-bg-dark: #242442;
-  --hover-color-dark: #303056;
+  --border-color-dark: #333333;
+  --card-bg-dark: #1e1e1e;
+  --hover-color-dark: #2a2a2a;
+  --primary-color-rgb-dark: 96, 165, 250;
+  --secondary-color-rgb-dark: 251, 113, 133;
 
   /* Gradients */
-  --gradient-light: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(46, 204, 113, 0.2));
-  --gradient-dark: linear-gradient(135deg, rgba(74, 158, 255, 0.2), rgba(78, 204, 163, 0.2));
+  --gradient-light: linear-gradient(135deg, rgba(225, 29, 72, 0.05), rgba(225, 29, 72, 0.1));
+  --gradient-dark: linear-gradient(135deg, rgba(251, 113, 133, 0.05), rgba(251, 113, 133, 0.15));
   
   /* Shared variables */
   --border-radius: 8px;
-  --box-shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
-  --box-shadow-dark: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --box-shadow-light: 0 2px 10px rgba(0, 0, 0, 0.05);
+  --box-shadow-dark: 0 2px 10px rgba(0, 0, 0, 0.2);
   --transition-speed: 0.3s;
   
   /* Default theme (light) */
@@ -40,6 +44,8 @@
   --hover-color: var(--hover-color-light);
   --gradient: var(--gradient-light);
   --box-shadow: var(--box-shadow-light);
+  --primary-color-rgb: var(--primary-color-rgb-light);
+  --secondary-color-rgb: var(--secondary-color-rgb-light);
 }
 
 /* Dark theme variables */
@@ -54,14 +60,14 @@
   --hover-color: var(--hover-color-dark);
   --gradient: var(--gradient-dark);
   --box-shadow: var(--box-shadow-dark);
+  --primary-color-rgb: var(--primary-color-rgb-dark);
+  --secondary-color-rgb: var(--secondary-color-rgb-dark);
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  transition: background-color var(--transition-speed) ease,
-              color var(--transition-speed) ease;
 }
 
 body {
@@ -95,33 +101,24 @@ a:hover {
   flex-direction: column;
   min-height: 100vh;
   background: var(--gradient);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-.home-container {
+.app-loaded {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.main-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  position: relative;
   padding: 1rem;
-}
-
-.profile-toggle-button {
-  position: absolute;
-  top: 0;
-  right: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--accent-color);
-  color: white;
-  border-radius: var(--border-radius);
-  font-weight: 600;
-  z-index: 10;
-}
-
-.profile-toggle-button:hover {
-  background-color: var(--accent-color-dark, #0056b3);
-  transform: translateY(-2px);
 }
 
 .main-content {
@@ -140,8 +137,10 @@ a:hover {
   padding: 1rem;
   text-align: center;
   border-top: 1px solid var(--border-color);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   background-color: var(--bg-color);
+  margin-bottom: 5rem; /* Space for bottom navigation */
+  opacity: 0.7;
 }
 
 #root {
@@ -301,4 +300,25 @@ a:hover {
   margin: 0 auto;
   position: relative;
   padding: 1rem;
+}
+
+
+/* Body styling to ensure the app takes full height */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.app-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.bottom-navigation-space {
+  height: 6rem;
+  width: 100%;
 }

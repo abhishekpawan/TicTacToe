@@ -1,14 +1,18 @@
 .theme-toggle {
-  background-color: transparent;
+  background: transparent;
   border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  outline: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  color: var(--text-color);
+  transition: all 0.3s ease;
 }
 
 .theme-toggle:hover {
@@ -20,23 +24,60 @@
   transform: scale(0.9);
 }
 
-.sun-icon, .moon-icon {
-  width: 24px;
-  height: 24px;
-  stroke: var(--text-color);
+.sun-icon,
+.moon-icon {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
   stroke-width: 2;
   fill: none;
-  transition: stroke 0.3s ease;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.sun-icon {
+  animation: rotateIn 0.5s ease;
 }
 
 .moon-icon {
-  fill: none;
-  stroke: var(--text-color);
+  fill: currentColor;
+  animation: bounceIn 0.5s ease;
 }
 
-.theme-toggle:hover .sun-icon,
-.theme-toggle:hover .moon-icon {
-  stroke: var(--primary-color);
+@keyframes rotateIn {
+  0% {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Add a subtle glow for dark mode icon */
+[data-theme='dark'] .sun-icon {
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.6));
+}
+
+/* Add a subtle glow for light mode icon */
+[data-theme='light'] .moon-icon {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.3));
 }
 
 .theme-toggle:focus-visible {

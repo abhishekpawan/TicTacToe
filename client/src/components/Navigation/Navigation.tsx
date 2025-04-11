@@ -1,97 +1,68 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useGame } from '../../contexts/GameContext';
 import '../../styles/Navigation.css';
+import { FaHome, FaGamepad, FaUser, FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
 
 const Navigation: React.FC = () => {
   const { user, signOut } = useAuth();
   const { roomId } = useGame();
-  const [isOpen, setIsOpen] = useState(false);
 
   const handleSignOut = () => {
     signOut().catch(error => {
       console.error('Error signing out:', error);
     });
-    setIsOpen(false);
-  };
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const closeMenu = () => {
-    setIsOpen(false);
   };
 
   return (
-    <nav className="navigation">
-      <button 
-        className="hamburger-menu" 
-        onClick={toggleMenu} 
-        aria-label="Toggle navigation menu"
-      >
-        <span className="hamburger-line"></span>
-        <span className="hamburger-line"></span>
-        <span className="hamburger-line"></span>
-      </button>
-
-      <div className={`nav-container ${isOpen ? 'open' : ''}`}>
-        <ul className="nav-links">
-          <li>
+    <nav className="bottom-navigation fixed-nav">
+      <div className="nav-container">
+        <NavLink 
+          to="/welcome" 
+          className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+        >
+          <FaHome className="nav-icon" />
+          <span className="nav-label">Home</span>
+        </NavLink>
+        
+        {roomId && (
+          <NavLink 
+            to="/game" 
+            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+          >
+            <FaGamepad className="nav-icon" />
+            <span className="nav-label">Game</span>
+          </NavLink>
+        )}
+        
+        {!user ? (
+          <NavLink 
+            to="/auth" 
+            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+          >
+            <FaSignInAlt className="nav-icon" />
+            <span className="nav-label">Login</span>
+          </NavLink>
+        ) : (
+          <>
             <NavLink 
-              to="/welcome" 
-              className={({ isActive }) => isActive ? 'active' : ''} 
-              onClick={closeMenu}
+              to="/profile" 
+              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
             >
-              Welcome
+              <FaUser className="nav-icon" />
+              <span className="nav-label">Profile</span>
             </NavLink>
-          </li>
-          
-          {roomId && (
-            <li>
-              <NavLink 
-                to="/game" 
-                className={({ isActive }) => isActive ? 'active' : ''} 
-                onClick={closeMenu}
-              >
-                Game
-              </NavLink>
-            </li>
-          )}
-          
-          {!user ? (
-            <li>
-              <NavLink 
-                to="/auth" 
-                className={({ isActive }) => isActive ? 'active' : ''} 
-                onClick={closeMenu}
-              >
-                Login
-              </NavLink>
-            </li>
-          ) : (
-            <>
-              <li>
-                <NavLink 
-                  to="/profile" 
-                  className={({ isActive }) => isActive ? 'active' : ''} 
-                  onClick={closeMenu}
-                >
-                  Profile
-                </NavLink>
-              </li>
-              <li>
-                <button className="logout-button" onClick={handleSignOut}>
-                  Logout
-                </button>
-              </li>
-            </>
-          )}
-        </ul>
+            <button 
+              className="nav-item logout-button" 
+              onClick={handleSignOut}
+            >
+              <FaSignOutAlt className="nav-icon" />
+              <span className="nav-label">Logout</span>
+            </button>
+          </>
+        )}
       </div>
-      
-      {isOpen && <div className="overlay" onClick={closeMenu}></div>}
     </nav>
   );
 };

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Button from '../UI/Button';
 
 interface ErrorWithMessage {
   message: string;
@@ -54,7 +55,6 @@ const LoginForm = () => {
 
   return (
     <div className="auth-form-container">
-      <h2>Login</h2>
       {error && <div className="error-message">{error}</div>}
       <form onSubmit={(e) => { void handleSubmit(e); }}>
         <div className="form-group">
@@ -79,20 +79,26 @@ const LoginForm = () => {
               disabled={loading}
               required
             />
-            <button 
-              type="button" 
+            <Button 
+              variant="text"
               className="password-toggle-btn" 
-              onClick={() => togglePasswordVisibility()}
-              tabIndex={-1}
+              onClick={togglePasswordVisibility}
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </button>
+            </Button>
           </div>
         </div>
-        <button type="submit" disabled={loading} className="auth-button">
+        <Button 
+          variant="primary" 
+          type="submit" 
+          disabled={loading} 
+          loading={loading}
+          fullWidth
+          className="auth-button"
+        >
           {loading ? 'Logging in...' : 'Login'}
-        </button>
+        </Button>
       </form>
     </div>
   );

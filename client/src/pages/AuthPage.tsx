@@ -1,14 +1,14 @@
+import React from 'react';
 import Auth from '../components/Auth/Auth';
-import { Link } from 'react-router-dom';
+import '../styles/Auth.css';
 
-const AuthPage = () => {
+const AuthPage: React.FC = () => {
   return (
     <div className="auth-page">
-      <Link to="/" className="back-button">
-        &larr; Back to Game
-      </Link>
-      <h1>Tic-Tac-Toe</h1>
-      <p className="subtitle">Sign up or log in to play</p>
+      <div className="auth-header">
+        <h1 className="auth-title">Tic-Tac-Toe</h1>
+        <p className="subtitle">Sign up or log in to play</p>
+      </div>
       <Auth />
     </div>
   );

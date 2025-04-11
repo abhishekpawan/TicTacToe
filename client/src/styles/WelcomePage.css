@@ -3,5 +3,4 @@
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 126px); /* Adjust for header/footer */
-  padding: 1rem;
 } 

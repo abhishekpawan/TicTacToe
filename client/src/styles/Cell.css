@@ -1,18 +1,43 @@
 .cell {
+  aspect-ratio: 1;
+  background-color: var(--card-bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--card-bg);
-  border-radius: 4px;
   cursor: pointer;
+  border-radius: 4px;
+  box-shadow: var(--box-shadow);
   transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
 }
 
+.cell:after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 10%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10);
+  opacity: 0;
+  transition: transform 0.5s, opacity 0.5s;
+}
+
+.cell:active:after {
+  transform: scale(0);
+  opacity: 0.3;
+  transition: 0s;
+}
+
 .cell.active:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   background-color: var(--hover-color);
-  transform: scale(1.02);
 }
 
 .cell-value {
@@ -21,9 +46,86 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: bold;
-  color: var(--text-color);
+  position: relative;
+  animation: cellAppear 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.x-mark, .o-mark {
+  width: 65%;
+  height: 65%;
+}
+
+.x-mark-line1, .x-mark-line2 {
+  stroke: var(--primary-color);
+  stroke-width: 3;
+  stroke-linecap: round;
+  fill: none;
+  animation: drawLine 0.4s ease forwards;
+}
+
+.x-mark-line2 {
+  animation-delay: 0.15s;
+  animation-duration: 0.3s;
+}
+
+.o-mark circle {
+  stroke: var(--secondary-color);
+  stroke-width: 3;
+  fill: none;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: drawCircle 0.5s ease-out forwards;
+}
+
+@keyframes cellAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes drawLine {
+  0% {
+    stroke-dasharray: 30;
+    stroke-dashoffset: 30;
+  }
+  100% {
+    stroke-dasharray: 30;
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes drawCircle {
+  0% {
+    stroke-dashoffset: 60;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Winning cell animation */
+.cell.winning {
+  animation: winningPulse 1.5s ease infinite;
+  z-index: 1;
+}
+
+@keyframes winningPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb), 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(var(--primary-color-rgb), 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb), 0);
+  }
 }
 
 .cell-x {
