@@ -1,9 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { useGame } from '../../contexts/GameContext';
 import '../../styles/Navigation.css';
 import { FaHome, FaGamepad, FaUser, FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
+import { useGame } from '../../contexts/GameContext';
 
 const Navigation: React.FC = () => {
   const { user, signOut } = useAuth();

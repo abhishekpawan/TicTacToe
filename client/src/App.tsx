@@ -9,6 +9,7 @@ import GamePage from './pages/GamePage';
 import NotFound from './pages/NotFound';
 import AuthPage from './pages/AuthPage';
 import WelcomePage from './pages/WelcomePage';
+import ProfilePage from './pages/ProfilePage';
 import { AuthProtectedRoute, PrivateRoute } from './components/Auth/ProtectedRoute';
 
 function App() {
@@ -32,11 +33,9 @@ function App() {
                     </Route>
                     
                     {/* Add private routes here that require authentication */}
-                    {/* For example:
                     <Route element={<PrivateRoute />}>
                       <Route path="/profile" element={<ProfilePage />} />
                     </Route>
-                    */}
                     
                     <Route path="*" element={<NotFound />} />
                   </Route>

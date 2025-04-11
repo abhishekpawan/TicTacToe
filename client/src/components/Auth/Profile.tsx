@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { gameAPI } from '../../services/api';
+import { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContext";
+import { gameAPI } from "../../services/api";
+import Button from "../UI/Button";
 
 interface GameStats {
   games_played: number;
@@ -17,7 +18,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchStats = async () => {
       if (!user) return;
-      
+
       setLoading(true);
       try {
         const response = await gameAPI.getStats();
@@ -25,7 +26,7 @@ const Profile = () => {
           setStats(response.data as GameStats);
         }
       } catch (error) {
-        console.error('Error fetching stats:', error);
+        console.error("Error fetching stats:", error);
       } finally {
         setLoading(false);
       }
@@ -39,7 +40,7 @@ const Profile = () => {
     try {
       await signOut();
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
     }
   };
 
@@ -48,14 +49,18 @@ const Profile = () => {
   return (
     <div className="profile-container">
       <h2>Profile</h2>
-      
+
       <div className="user-info">
-        <p><strong>Email:</strong> {user.email || 'No email'}</p>
+        <p>
+          <strong>Email:</strong> {user.email || "No email"}
+        </p>
         {user.user_metadata?.username && (
-          <p><strong>Username:</strong> {user.user_metadata.username}</p>
+          <p>
+            <strong>Username:</strong> {user.user_metadata.username}
+          </p>
         )}
       </div>
-      
+
       {loading ? (
         <p>Loading stats...</p>
       ) : stats ? (
@@ -83,15 +88,15 @@ const Profile = () => {
       ) : (
         <p>No stats available yet. Play some games!</p>
       )}
-      
-      <button 
+      <Button
+        variant="primary"
+        size="large"
         onClick={() => void handleLogout()}
-        className="logout-button"
       >
         Log Out
-      </button>
+      </Button>
     </div>
   );
 };
 
-export default Profile; 
+export default Profile;
