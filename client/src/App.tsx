@@ -1,4 +1,4 @@
-import './App.css';
+import './styles/App.css';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { SocketProvider } from './contexts/SocketContext';
 import { GameProvider } from './contexts/GameContext';

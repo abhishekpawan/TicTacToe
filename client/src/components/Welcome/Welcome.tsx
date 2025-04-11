@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGame } from '../../contexts/GameContext';
-import './Welcome.css';
+import '../../styles/Welcome.css';
 
 const Welcome: React.FC = () => {
   const { findMatch, roomId, isWaiting } = useGame();

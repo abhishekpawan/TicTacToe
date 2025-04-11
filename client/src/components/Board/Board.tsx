@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGame } from '../../contexts/GameContext';
-import './Board.css';
+import '../../styles/Board.css';
 import Cell from './Cell';
 
 const Board: React.FC = () => {

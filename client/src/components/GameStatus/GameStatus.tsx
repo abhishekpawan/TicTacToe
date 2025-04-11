@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGame } from '../../contexts/GameContext';
-import './GameStatus.css';
+import '../../styles/GameStatus.css';
 
 const GameStatus: React.FC = () => {
   const { 
