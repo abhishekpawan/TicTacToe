@@ -5,6 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { GameState, ServerToClientEvents, ClientToServerEvents } from './types/socket.js';
+import authRoutes from './routes/auth.js';
 
 // Load environment variables
 dotenv.config();
@@ -28,6 +29,9 @@ app.use(express.json());
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_KEY || '';
 export const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Routes
+app.use('/api/auth', authRoutes);
 
 // Game room interface
 interface Room {
@@ -113,6 +117,17 @@ io.on('connection', (socket) => {
       waitingPlayers.add(playerId);
       socket.emit('waiting-for-opponent');
       console.log(`Player ${playerId} is waiting for an opponent`);
+    }
+  });
+
+  // When a player cancels matchmaking
+  socket.on('cancel-matchmaking', () => {
+    const playerId = socket.id;
+    
+    // Remove the player from the waiting list
+    if (waitingPlayers.has(playerId)) {
+      waitingPlayers.delete(playerId);
+      console.log(`Player ${playerId} canceled matchmaking`);
     }
   });
 

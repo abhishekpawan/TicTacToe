@@ -21,6 +21,7 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
   'find-match': () => void;
+  'cancel-matchmaking': () => void;
   'make-move': (data: { roomId: string; position: number }) => void;
   'play-again': (data: { roomId: string }) => void;
 } 

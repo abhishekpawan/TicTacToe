@@ -23,6 +23,7 @@ interface GameContextType {
   opponentDisconnected: boolean;
   makeMove: (position: number) => void;
   findMatch: () => void;
+  cancelMatchmaking: () => void;
   playAgain: () => void;
 }
 
@@ -102,14 +103,31 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Function to find a match
   const findMatch = () => {
-    if (!socket) return;
+    console.log('Find match clicked, socket status:', socket ? 'connected' : 'disconnected');
+    
+    if (!socket) {
+      console.error('Socket is not connected, cannot find match');
+      return;
+    }
     
     setGameState(initialGameState);
     setPlayers([]);
     setRoomId(null);
     setOpponentDisconnected(false);
     
+    console.log('Emitting find-match event to server');
     socket.emit('find-match');
+  };
+
+  // Function to cancel matchmaking
+  const cancelMatchmaking = () => {
+    if (!socket) return;
+    
+    // Only cancel if we're actually waiting
+    if (isWaiting) {
+      socket.emit('cancel-matchmaking');
+      setIsWaiting(false);
+    }
   };
 
   // Function to make a move
@@ -140,6 +158,7 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       opponentDisconnected,
       makeMove,
       findMatch,
+      cancelMatchmaking,
       playAgain
     }}>
       {children}

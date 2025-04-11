@@ -29,4 +29,11 @@ export const apiService = {
   // Add more API methods as needed
 };
 
+// Game API
+export const gameAPI = {
+  getStats: () => {
+    return api.get('/api/game/stats');
+  },
+};
+
 export default api; 

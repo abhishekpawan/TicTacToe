@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useGame } from '../../contexts/GameContext';
+import { useAuth } from '../../contexts/AuthContext';
 import '../../styles/Welcome.css';
 
 const Welcome: React.FC = () => {
-  const { findMatch, roomId, isWaiting } = useGame();
+  const { findMatch, cancelMatchmaking, roomId, isWaiting } = useGame();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   
-  // Don't show welcome screen if in a room or waiting for opponent
-  if (roomId || isWaiting) {
-    return null;
-  }
+  // Redirect to game page if in a room
+  useEffect(() => {
+    if (roomId) {
+      void navigate('/game');
+    }
+  }, [roomId, navigate]);
   
   return (
     <div className="welcome">
@@ -17,9 +23,39 @@ const Welcome: React.FC = () => {
         <p className="welcome-text">
           Play against random opponents online! The game will automatically match you with another player.
         </p>
-        <button className="start-game-btn" onClick={findMatch}>
-          Find a Match
-        </button>
+        
+        {isWaiting ? (
+          <div className="matchmaking-status">
+            <p>Looking for an opponent...</p>
+            <div className="loading-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <button className="cancel-match-btn" onClick={cancelMatchmaking}>
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button className="start-game-btn" onClick={findMatch}>
+            Find a Match
+          </button>
+        )}
+        
+        <div className="auth-info">
+          {user ? (
+            <p>You're logged in as {user.email}</p>
+          ) : (
+            <>
+              <p className="auth-info-text">
+                Create an account to track your game statistics!
+              </p>
+              <Link to="/auth" className="auth-link-btn">
+                Login / Sign Up
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

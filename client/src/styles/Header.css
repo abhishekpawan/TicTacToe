@@ -40,4 +40,16 @@
   .game-title {
     font-size: 1.5rem;
   }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .header-right {
+    gap: 1rem;
+  }
 } 
