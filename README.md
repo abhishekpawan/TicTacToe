@@ -1,57 +1,85 @@
-# TicTacToe Fullstack Application
+# Tic Tac Toe Online
 
-A fullstack React application with Vite, TypeScript, Node.js, and Supabase.
+An online multiplayer Tic Tac Toe game where two random players can match up and play against each other.
 
-## Project Structure
+## Features
 
-- `/client` - React frontend built with Vite and TypeScript
-- `/server` - Node.js backend with Express and Supabase integration
+- Real-time multiplayer gameplay
+- Automatic player matching
+- Modern, minimalistic UI with subtle gradient colors
+- Dark/light mode support
+- Animated game elements
+- Responsive design for all devices
 
-## Setup Instructions
+## Tech Stack
+
+- **Frontend**: React, TypeScript, Vite
+- **Backend**: Node.js, Express, Socket.io
+- **Styling**: Plain CSS with component-based styles
+
+## Getting Started
 
 ### Prerequisites
 
-- Node.js (v18+)
-- pnpm
+- Node.js (version 14 or higher)
+- npm or pnpm
 
-### Client Setup
+### Installation and Setup
 
-```bash
-# Navigate to client directory
-cd client
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/tictactoe.git
+   cd tictactoe
+   ```
 
-# Install dependencies
-pnpm install
+2. Install dependencies for both client and server:
+   ```bash
+   # Install server dependencies
+   cd server
+   npm install
+   # or using pnpm
+   pnpm install
 
-# Start development server
-pnpm dev
-```
+   # Install client dependencies
+   cd ../client
+   npm install
+   # or using pnpm
+   pnpm install
+   ```
 
-### Server Setup
+3. Set up environment variables:
+   - Copy `.env.example` to `.env` in both client and server directories (already done)
+   - Update the values if needed
 
-```bash
-# Navigate to server directory
-cd server
+### Running the Application
 
-# Install dependencies
-pnpm install
+1. Start the server:
+   ```bash
+   cd server
+   npm run dev
+   # or using pnpm
+   pnpm run dev
+   ```
 
-# Configure environment variables
-# Copy the .env.example to .env and update with your Supabase credentials
-cp .env.example .env
+2. In a separate terminal, start the client:
+   ```bash
+   cd client
+   npm run dev
+   # or using pnpm
+   pnpm run dev
+   ```
 
-# Start development server
-pnpm dev
-```
+3. Access the application at `http://localhost:5174` in your browser
 
-### Supabase Setup
+## How to Play
 
-1. Create a Supabase account at [https://supabase.com](https://supabase.com)
-2. Create a new project
-3. Get your project URL and anon key from the API settings
-4. Update the `.env` file in the server directory with your credentials
+1. Open the application in your browser
+2. Click "Find a Match" to be paired with another player
+3. Wait for an opponent to join
+4. Take turns making moves on the board
+5. The game will automatically detect wins or draws
+6. Play again or find a new match after the game ends
 
-## Development
+## License
 
-- Client runs on: http://localhost:5173
-- Server runs on: http://localhost:3000 
+MIT 

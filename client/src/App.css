@@ -1,3 +1,122 @@
+:root {
+  /* Light theme colors */
+  --bg-color-light: #f5f5f5;
+  --text-color-light: #333333;
+  --primary-color-light: #3498db;
+  --secondary-color-light: #e74c3c;
+  --accent-color-light: #2ecc71;
+  --border-color-light: #dddddd;
+  --card-bg-light: #ffffff;
+  --hover-color-light: #f0f0f0;
+
+  /* Dark theme colors */
+  --bg-color-dark: #1a1a2e;
+  --text-color-dark: #e6e6e6;
+  --primary-color-dark: #4a9eff;
+  --secondary-color-dark: #ff6b6b;
+  --accent-color-dark: #4ecca3;
+  --border-color-dark: #444444;
+  --card-bg-dark: #242442;
+  --hover-color-dark: #303056;
+
+  /* Gradients */
+  --gradient-light: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(46, 204, 113, 0.2));
+  --gradient-dark: linear-gradient(135deg, rgba(74, 158, 255, 0.2), rgba(78, 204, 163, 0.2));
+  
+  /* Shared variables */
+  --border-radius: 8px;
+  --box-shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --box-shadow-dark: 0 2px 10px rgba(0, 0, 0, 0.3);
+  --transition-speed: 0.3s;
+  
+  /* Default theme (light) */
+  --bg-color: var(--bg-color-light);
+  --text-color: var(--text-color-light);
+  --primary-color: var(--primary-color-light);
+  --secondary-color: var(--secondary-color-light);
+  --accent-color: var(--accent-color-light);
+  --border-color: var(--border-color-light);
+  --card-bg: var(--card-bg-light);
+  --hover-color: var(--hover-color-light);
+  --gradient: var(--gradient-light);
+  --box-shadow: var(--box-shadow-light);
+}
+
+/* Dark theme variables */
+[data-theme='dark'] {
+  --bg-color: var(--bg-color-dark);
+  --text-color: var(--text-color-dark);
+  --primary-color: var(--primary-color-dark);
+  --secondary-color: var(--secondary-color-dark);
+  --accent-color: var(--accent-color-dark);
+  --border-color: var(--border-color-dark);
+  --card-bg: var(--card-bg-dark);
+  --hover-color: var(--hover-color-dark);
+  --gradient: var(--gradient-dark);
+  --box-shadow: var(--box-shadow-dark);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color var(--transition-speed) ease,
+              color var(--transition-speed) ease;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  border-radius: var(--border-radius);
+  transition: all var(--transition-speed) ease;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-speed) ease;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--gradient);
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.footer {
+  padding: 1rem;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  background-color: var(--bg-color);
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;

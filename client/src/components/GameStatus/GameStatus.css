@@ -1,0 +1,101 @@
+.game-status {
+  position: relative;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  margin: 2rem 0;
+  text-align: center;
+  box-shadow: var(--box-shadow);
+  animation: slideDown 0.4s ease-out;
+  max-width: 400px;
+  width: 100%;
+}
+
+.status-message {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+}
+
+.game-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.play-again-btn, .find-match-btn {
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.play-again-btn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.find-match-btn {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+.play-again-btn:hover, .find-match-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.play-again-btn:active, .find-match-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  margin: 1rem auto;
+  text-align: center;
+}
+
+.spinner {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 500px) {
+  .game-status {
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  
+  .status-message {
+    font-size: 1.2rem;
+  }
+  
+  .game-actions {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+} 

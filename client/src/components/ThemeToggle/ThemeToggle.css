@@ -1,0 +1,44 @@
+.theme-toggle {
+  background-color: transparent;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  outline: none;
+}
+
+.theme-toggle:hover {
+  background-color: var(--hover-color);
+  transform: rotate(15deg);
+}
+
+.theme-toggle:active {
+  transform: scale(0.9);
+}
+
+.sun-icon, .moon-icon {
+  width: 24px;
+  height: 24px;
+  stroke: var(--text-color);
+  stroke-width: 2;
+  fill: none;
+  transition: stroke 0.3s ease;
+}
+
+.moon-icon {
+  fill: none;
+  stroke: var(--text-color);
+}
+
+.theme-toggle:hover .sun-icon,
+.theme-toggle:hover .moon-icon {
+  stroke: var(--primary-color);
+}
+
+.theme-toggle:focus-visible {
+  box-shadow: 0 0 0 2px var(--primary-color);
+} 
