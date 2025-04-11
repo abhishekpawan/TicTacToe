@@ -11,6 +11,17 @@ const Board: React.FC = () => {
   
   return (
     <div className="board-container">
+      <div className="player-indicators">
+        <div className="player-mark">
+          <span className="x-indicator">X</span> 
+          <span className="player-label">{playerMark === 'X' ? '(You)' : '(Opponent)'}</span>
+        </div>
+        <div className="player-mark">
+          <span className="o-indicator">O</span> 
+          <span className="player-label">{playerMark === 'O' ? '(You)' : '(Opponent)'}</span>
+        </div>
+      </div>
+      
       <div className={`board ${isGameOver ? 'game-over' : ''}`}>
         {board.map((value, index) => (
           <Cell 
@@ -22,6 +33,7 @@ const Board: React.FC = () => {
           />
         ))}
       </div>
+      
       {!isGameOver && (
         <div className="turn-indicator">
           {isPlayerTurn ? (

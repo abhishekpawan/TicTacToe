@@ -1,4 +1,3 @@
-import React from 'react';
 import './App.css';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { SocketProvider } from './contexts/SocketContext';

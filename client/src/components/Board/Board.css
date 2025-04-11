@@ -5,6 +5,38 @@
   margin: 2rem auto;
 }
 
+/* Player indicators */
+.player-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.player-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.x-indicator {
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 3px var(--primary-color));
+}
+
+.o-indicator {
+  color: var(--secondary-color);
+  font-size: 1.5rem;
+  filter: drop-shadow(0 0 3px var(--secondary-color));
+}
+
+.player-label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
 .board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -29,6 +61,14 @@
     height: 270px;
     gap: 8px;
     padding: 8px;
+  }
+  
+  .player-indicators {
+    gap: 1rem;
+  }
+  
+  .x-indicator, .o-indicator {
+    font-size: 1.2rem;
   }
 }
 

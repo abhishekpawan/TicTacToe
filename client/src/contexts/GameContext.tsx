@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useSocket } from './SocketContext';
-import { Socket } from 'socket.io-client';
-import { ServerToClientEvents, ClientToServerEvents } from '../types/socket';
 
 type Player = {
   id: string;
