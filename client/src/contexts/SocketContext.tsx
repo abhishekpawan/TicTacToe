@@ -19,7 +19,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   
   useEffect(() => {
     // Get the backend URL from environment variables, with fallback
-    const SOCKET_URL = (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:3000';
+    const SOCKET_URL = (import.meta.env.VITE_SERVER_URL as string | undefined) || 'http://localhost:3000';
     
     console.log('Connecting to socket server at:', SOCKET_URL);
     
