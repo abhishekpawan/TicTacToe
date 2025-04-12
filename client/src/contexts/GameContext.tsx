@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useSocket } from './SocketContext';
-import axios from 'axios';
 import { useAuth } from './AuthContext';
 import { gameAPI } from '../services/api';
 
@@ -51,9 +50,6 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const isGameOver = gameState.winner !== null || gameState.isDraw;
   
   const playerMark = players.find(p => p.id === socket?.id)?.mark || null;
-
-  // Fallback API URL for serverless environment
-  const API_URL = (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:3000';
 
   // Update game stats via REST API when in serverless mode
   const updateStatsViaAPI = async (result: 'win' | 'loss' | 'draw') => {
