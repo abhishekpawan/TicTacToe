@@ -14,8 +14,8 @@
     "concurrently": "^8.0.1"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=6.0.0"
+    "npm": ">=9.0.0 <8.0.0",
+    "node": ">=16.0.0 <17.0.0"
   },
   "keywords": [
     "tictactoe",
