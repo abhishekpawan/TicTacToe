@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: tictactoe-server
+    env: node
+    buildCommand: cd server && npm install && npm run build
+    startCommand: cd server && npm run start:render
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: RENDER
+        value: true
+      - key: PORT
+        value: 3000
+      - key: CLIENT_URL
+        # Replace with your actual client URL once deployed
+        value: https://your-client-site.vercel.app 

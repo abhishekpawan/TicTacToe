@@ -29,24 +29,28 @@ app.use('/api/auth', authRoutes);
 app.use('/api/game', gameRoutes);
 
 // Setup HTTP server and Socket.io
-let io: Server<ClientToServerEvents, ServerToClientEvents>;
+let io: Server<ClientToServerEvents, ServerToClientEvents> | undefined;
 let httpServer;
 
-// Only create socket server in non-serverless environment
-if (process.env.NODE_ENV !== 'production') {
-  httpServer = createServer(app);
-  io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {
-    cors: {
-      origin: process.env.CLIENT_URL || 'http://localhost:5174',
-      methods: ['GET', 'POST'],
-    } as any
-  });
+// For local development, start the server
+// For Vercel, export the app
+// For Render, always listen on the port
+const shouldStartServer = process.env.NODE_ENV !== 'production' || process.env.RENDER === 'true';
 
-  setupSocketHandlers(io);
+if (shouldStartServer) {
+  httpServer = httpServer || createServer(app);
+  if (!io) {
+    io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {
+      cors: {
+        origin: process.env.CLIENT_URL || 'http://localhost:5174',
+        methods: ['GET', 'POST'],
+      } as any
+    });
+    setupSocketHandlers(io);
+  }
   
-  // Start server for development
   httpServer.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
   });
 }
 
