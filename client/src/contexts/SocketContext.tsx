@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { ClientToServerEvents, ServerToClientEvents } from '../types/socket';
+import { useAuth } from './AuthContext';
 
 interface SocketContextType {
   socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
@@ -12,10 +13,16 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined);
 export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const { user, session } = useAuth();
 
   useEffect(() => {
-    // Create socket connection
-    const socketInstance = io(import.meta.env.VITE_SERVER_URL || 'http://localhost:3000') as Socket<ServerToClientEvents, ClientToServerEvents>;
+    // Get server URL from environment variables with fallback
+    const serverUrl = (import.meta.env.VITE_SERVER_URL as string | undefined) || 'http://localhost:3000';
+    
+    // Create socket connection with auth token if available
+    const socketInstance = io(serverUrl, {
+      auth: { token: session?.access_token }
+    }) as Socket<ServerToClientEvents, ClientToServerEvents>;
     
     socketInstance.on('connect', () => {
       setIsConnected(true);
@@ -33,7 +40,7 @@ export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) 
     return () => {
       socketInstance.disconnect();
     };
-  }, []);
+  }, [user, session]); // Re-initialize socket when user or session changes
 
   return (
     <SocketContext.Provider value={{ socket, isConnected }}>

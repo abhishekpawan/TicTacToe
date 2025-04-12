@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios, { InternalAxiosRequestConfig } from 'axios';
+import { supabase } from './supabaseClient';
 
 // Define response types
 interface PingResponse {
@@ -7,10 +8,24 @@ interface PingResponse {
 
 // Create an axios instance with default config
 const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_SERVER_URL as string || 'http://localhost:3000',
   headers: {
     'Content-Type': 'application/json',
   },
+});
+
+// Add request interceptor to include auth token
+api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+  const { data } = await supabase.auth.getSession();
+  const session = data.session;
+  
+  if (session?.access_token) {
+    // Ensure headers object exists
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${session.access_token}`;
+  }
+  
+  return config;
 });
 
 // Define your API endpoints here

@@ -6,6 +6,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { GameState, ServerToClientEvents, ClientToServerEvents } from './types/socket.js';
 import authRoutes from './routes/auth.js';
+import gameRoutes from './routes/game.js';
 
 // Load environment variables
 dotenv.config();
@@ -32,6 +33,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/game', gameRoutes);
 
 // Game room interface
 interface Room {
@@ -132,7 +134,7 @@ io.on('connection', (socket) => {
   });
 
   // When a player makes a move
-  socket.on('make-move', ({ roomId, position }) => {
+  socket.on('make-move', async ({ roomId, position }) => {
     const room = rooms.get(roomId);
     
     if (!room || !room.isActive) return;
@@ -165,8 +167,93 @@ io.on('connection', (socket) => {
     
     // If the game is over, clean up
     if (winner || isDraw) {
+      console.log(`Game over in room ${roomId}: winner=${winner}, isDraw=${isDraw}`);
       io.to(roomId).emit('game-over', { winner, isDraw });
       room.isActive = false;
+      
+      // Get player sockets to get their auth data for stats update
+      const player1Socket = io.sockets.sockets.get(room.players[0].id);
+      const player2Socket = io.sockets.sockets.get(room.players[1].id);
+      
+      console.log('Player sockets:', {
+        player1Available: !!player1Socket,
+        player2Available: !!player2Socket,
+        player1HasToken: !!player1Socket?.handshake.auth.token,
+        player2HasToken: !!player2Socket?.handshake.auth.token,
+        player1Id: room.players[0].id,
+        player2Id: room.players[1].id
+      });
+      
+      // Process each player independently for stats updates
+      // Import the updateGameStats function here to avoid circular dependencies
+      const processPlayerStats = async (playerSocket: any, playerMark: 'X' | 'O') => {
+        // Skip if player socket not available
+        if (!playerSocket) {
+          console.log(`Player socket not available for mark ${playerMark}, skipping stats update`);
+          return;
+        }
+        
+        // Skip if player not authenticated
+        const authToken = playerSocket.handshake.auth.token;
+        if (!authToken) {
+          console.log(`Player with mark ${playerMark} is not authenticated, skipping stats update`);
+          return;
+        }
+        
+        try {
+          // Get user ID from auth token
+          const result = await supabase.auth.getUser(authToken);
+          const userId = result.data.user?.id;
+          
+          // Skip if user ID not found
+          if (!userId) {
+            console.log(`Could not resolve user ID for player with mark ${playerMark}, skipping stats update`);
+            return;
+          }
+          
+          console.log(`Updating stats for player ${playerMark} (${userId})`);
+          
+          // Import the updateGameStats function here to avoid circular dependencies
+          const { updateGameStats } = await import('./models/User.js');
+          
+          // Update based on game result
+          if (isDraw) {
+            console.log(`Registering a draw for player ${playerMark}`);
+            await updateGameStats(userId, { 
+              games_played: 1, 
+              games_tied: 1 
+            });
+          } else if (winner === playerMark) {
+            console.log(`Registering a win for player ${playerMark}`);
+            await updateGameStats(userId, { 
+              games_played: 1, 
+              games_won: 1 
+            });
+          } else {
+            console.log(`Registering a loss for player ${playerMark}`);
+            await updateGameStats(userId, { 
+              games_played: 1, 
+              games_lost: 1 
+            });
+          }
+          console.log(`Successfully updated stats for player ${playerMark} (${userId})`);
+        } catch (error) {
+          console.error(`Error updating stats for player ${playerMark}:`, error);
+        }
+      };
+      
+      // Process each player independently - don't let one player's error affect the other
+      try {
+        await processPlayerStats(player1Socket, room.players[0].mark);
+      } catch (error) {
+        console.error('Error processing player 1 stats:', error);
+      }
+      
+      try {
+        await processPlayerStats(player2Socket, room.players[1].mark);
+      } catch (error) {
+        console.error('Error processing player 2 stats:', error);
+      }
       
       // Clean up after 10 minutes
       setTimeout(() => {

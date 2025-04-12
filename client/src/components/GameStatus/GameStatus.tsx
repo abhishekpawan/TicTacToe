@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useGame } from '../../contexts/GameContext';
+import { gameAPI } from '../../services/api';
 import Button from '../UI/Button';
 import '../../styles/GameStatus.css';
 
@@ -15,6 +16,24 @@ const GameStatus: React.FC = () => {
   } = useGame();
 
   const { winner, isDraw } = gameState;
+
+  // Refresh stats when game ends
+  useEffect(() => {
+    if (isGameOver || opponentDisconnected) {
+      // Wait a bit to ensure server has processed stats
+      const refreshTimer = setTimeout(() => {
+        try {
+          gameAPI.getStats().catch(error => {
+            console.error('Error refreshing stats:', error);
+          });
+        } catch (error) {
+          console.error('Error refreshing stats:', error);
+        }
+      }, 1000);
+      
+      return () => clearTimeout(refreshTimer);
+    }
+  }, [isGameOver, opponentDisconnected]);
 
   // Helper function to get status message
   const getStatusMessage = () => {
