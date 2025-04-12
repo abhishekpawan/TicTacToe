@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server/dist/index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "server/dist/index.js"
+    }
+  ],
+  "build": {
+    "env": {
+      "NPM_FLAGS": "--prefer-offline --no-audit --no-fund --no-optional",
+      "NODE_OPTIONS": "--max_old_space_size=4096"
+    }
+  },
+  "framework": "pnpm"
+} 
