@@ -44,11 +44,23 @@ export const apiService = {
   // Add more API methods as needed
 };
 
+// Add function to set auth token
+export const setAuthToken = (token: string | null) => {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+  }
+};
+
 // Game API
 export const gameAPI = {
   getStats: () => {
     return api.get('/api/game/stats');
   },
+  updateStats: (result: 'win' | 'loss' | 'draw') => {
+    return api.post('/api/game/stats/update', { result });
+  }
 };
 
 export default api; 

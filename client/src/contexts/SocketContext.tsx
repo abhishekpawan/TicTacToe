@@ -6,6 +6,7 @@ import { useAuth } from './AuthContext';
 interface SocketContextType {
   socket: Socket<ServerToClientEvents, ClientToServerEvents> | null;
   isConnected: boolean;
+  isServerless: boolean;
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -13,37 +14,64 @@ const SocketContext = createContext<SocketContextType | undefined>(undefined);
 export const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [socket, setSocket] = useState<Socket<ServerToClientEvents, ClientToServerEvents> | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const { user, session } = useAuth();
-
+  const [isServerless, setIsServerless] = useState(false);
+  const { session } = useAuth();
+  
   useEffect(() => {
-    // Get server URL from environment variables with fallback
-    const serverUrl = (import.meta.env.VITE_SERVER_URL as string | undefined) || 'http://localhost:3000';
+    // Get the backend URL from environment variables, with fallback
+    const SOCKET_URL = (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:3000';
     
-    // Create socket connection with auth token if available
-    const socketInstance = io(serverUrl, {
-      auth: { token: session?.access_token }
-    }) as Socket<ServerToClientEvents, ClientToServerEvents>;
+    console.log('Connecting to socket server at:', SOCKET_URL);
     
-    socketInstance.on('connect', () => {
+    // Create socket connection with auth if available, but it's optional
+    const authConfig = session?.access_token 
+      ? { token: session.access_token }
+      : {};
+      
+    const newSocket = io(SOCKET_URL, {
+      transports: ['websocket', 'polling'],
+      autoConnect: true,
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionAttempts: 5,
+      auth: authConfig
+    });
+    
+    console.log('Socket created with auth token:', session?.access_token ? 'present' : 'not available');
+    
+    // Connection event handlers
+    newSocket.on('connect', () => {
+      console.log('Socket connected successfully');
       setIsConnected(true);
-      console.log('Socket connected!', socketInstance.id);
+      setIsServerless(false);
     });
-
-    socketInstance.on('disconnect', () => {
+    
+    newSocket.on('connect_error', (err) => {
+      console.error('Socket connection error:', err);
+      // Check if we're likely in a serverless environment
+      if (SOCKET_URL.includes('vercel')) {
+        console.log('Detected serverless environment, disabling socket.io');
+        setIsServerless(true);
+      }
       setIsConnected(false);
-      console.log('Socket disconnected');
     });
-
-    setSocket(socketInstance);
-
-    // Clean up socket connection on unmount
+    
+    newSocket.on('disconnect', (reason) => {
+      console.log('Socket disconnected:', reason);
+      setIsConnected(false);
+    });
+    
+    // Save socket in state
+    setSocket(newSocket);
+    
+    // Cleanup on unmount
     return () => {
-      socketInstance.disconnect();
+      newSocket.disconnect();
     };
-  }, [user, session]); // Re-initialize socket when user or session changes
-
+  }, [session]); // Recreate socket when session changes
+  
   return (
-    <SocketContext.Provider value={{ socket, isConnected }}>
+    <SocketContext.Provider value={{ socket, isConnected, isServerless }}>
       {children}
     </SocketContext.Provider>
   );

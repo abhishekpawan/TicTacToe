@@ -1,5 +1,8 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useSocket } from './SocketContext';
+import axios from 'axios';
+import { useAuth } from './AuthContext';
+import { gameAPI } from '../services/api';
 
 type Player = {
   id: string;
@@ -37,7 +40,8 @@ const initialGameState: GameState = {
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const { socket } = useSocket();
+  const { socket, isServerless } = useSocket();
+  const { user } = useAuth();
   const [roomId, setRoomId] = useState<string | null>(null);
   const [players, setPlayers] = useState<Player[]>([]);
   const [gameState, setGameState] = useState<GameState>(initialGameState);
@@ -48,8 +52,58 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   
   const playerMark = players.find(p => p.id === socket?.id)?.mark || null;
 
+  // Fallback API URL for serverless environment
+  const API_URL = (import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:3000';
+
+  // Update game stats via REST API when in serverless mode
+  const updateStatsViaAPI = async (result: 'win' | 'loss' | 'draw') => {
+    if (!user) return; // Skip if not authenticated
+    
+    try {
+      await gameAPI.updateStats(result);
+      console.log(`Updated stats via API: ${result}`);
+    } catch (error) {
+      console.error('Error updating stats via API:', error);
+    }
+  };
+
+  // Hook to update stats when game ends in serverless mode
   useEffect(() => {
-    if (!socket) return;
+    if (!isGameOver || !isServerless || !user) {
+      console.log('Skipping stats update - conditions not met:', { 
+        isGameOver, 
+        isServerless, 
+        isAuthenticated: !!user 
+      });
+      return;
+    }
+    
+    console.log('Game over detected, checking winner/draw status:', {
+      winner: gameState.winner,
+      isDraw: gameState.isDraw,
+      playerMark
+    });
+    
+    // Only update stats if it's a local game in serverless mode
+    if (gameState.winner === 'X' || gameState.winner === 'O' || gameState.isDraw) {
+      let result: 'win' | 'loss' | 'draw';
+      
+      if (gameState.isDraw) {
+        result = 'draw';
+      } else if (gameState.winner === playerMark) {
+        result = 'win';
+      } else {
+        result = 'loss';
+      }
+      
+      console.log(`Updating stats via API with result: ${result}`);
+      // Use void operator to fix linting error with unhandled promise
+      void updateStatsViaAPI(result);
+    }
+  }, [isGameOver, isServerless, gameState.winner, gameState.isDraw, user, playerMark]);
+
+  useEffect(() => {
+    if (!socket || isServerless) return;
 
     // Listen for a match being found
     socket.on('match-found', (data: { roomId: string; players: Player[]; gameState: GameState }) => {
@@ -99,11 +153,25 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       socket.off('game-reset');
       socket.off('opponent-disconnected');
     };
-  }, [socket]);
+  }, [socket, isServerless]);
 
   // Function to find a match
   const findMatch = () => {
     console.log('Find match clicked, socket status:', socket ? 'connected' : 'disconnected');
+    
+    if (isServerless) {
+      console.log('In serverless mode, using REST API for matchmaking');
+      // Fallback to REST API for serverless environment
+      setIsWaiting(true);
+      
+      // Simulate a waiting period then show message
+      setTimeout(() => {
+        alert('Live matchmaking is not available in this environment. Try playing locally or on the development server.');
+        setIsWaiting(false);
+      }, 1500);
+      
+      return;
+    }
     
     if (!socket) {
       console.error('Socket is not connected, cannot find match');
@@ -121,6 +189,11 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Function to cancel matchmaking
   const cancelMatchmaking = () => {
+    if (isServerless) {
+      setIsWaiting(false);
+      return;
+    }
+    
     if (!socket) return;
     
     // Only cancel if we're actually waiting
@@ -132,6 +205,50 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Function to make a move
   const makeMove = (position: number) => {
+    if (isServerless) {
+      // In serverless mode, implement local gameplay logic
+      if (gameState.board[position] !== null || isGameOver) {
+        return;
+      }
+      
+      // Update board locally
+      const newBoard = [...gameState.board];
+      newBoard[position] = gameState.currentPlayer;
+      
+      // Check for win or draw
+      const newGameState: GameState = {
+        board: newBoard,
+        currentPlayer: gameState.currentPlayer === 'X' ? 'O' : 'X',
+        winner: null,
+        isDraw: false
+      };
+      
+      // Simple win check
+      const lines = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+      
+      for (const [a, b, c] of lines) {
+        if (newBoard[a] && newBoard[a] === newBoard[b] && newBoard[a] === newBoard[c]) {
+          newGameState.winner = newBoard[a];
+          console.log(`Winner detected in serverless mode: ${newGameState.winner}`);
+          break;
+        }
+      }
+      
+      // Check for draw
+      if (!newGameState.winner && newBoard.every(cell => cell !== null)) {
+        newGameState.isDraw = true;
+        console.log('Draw detected in serverless mode');
+      }
+      
+      console.log('Updated game state:', newGameState);
+      setGameState(newGameState);
+      return;
+    }
+    
     if (!socket || !roomId || gameState.board[position] !== null || 
         gameState.currentPlayer !== playerMark || isGameOver) {
       return;
@@ -142,6 +259,12 @@ export const GameProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Function to play again
   const playAgain = () => {
+    if (isServerless) {
+      // Reset game locally in serverless mode
+      setGameState(initialGameState);
+      return;
+    }
+    
     if (!socket || !roomId) return;
     
     socket.emit('play-again', { roomId });
