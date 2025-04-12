@@ -78,8 +78,8 @@ Tic Tac Toe Online is a full-stack web application that allows players to enjoy 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/tictactoe-online.git
-   cd tictactoe-online
+   git clone [https://github.com/yourusername/tictactoe-online.git](https://github.com/abhishekpawan/TicTacToe.git)
+   cd TicTacToe
    ```
 
 2. Install all dependencies with a single command:
